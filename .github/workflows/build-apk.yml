@@ -1,0 +1,34 @@
+name: Yasli Dostu APK Derleyici
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Kodu Klonla
+        uses: actions/checkout@v4
+
+      - name: Java 17 Kurulumu
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Gradle Wrapper Izni Ver
+        run: chmod +x gradlew || true
+
+      - name: APK Derle
+        run: ./gradlew assembleDebug --stacktrace || gradle assembleDebug
+
+      - name: APK Yukle
+        uses: actions/upload-artifact@v4
+        with:
+          name: YasliDostu-Fethiye-APK
+          path: app/build/outputs/apk/**/*.apk
+          retention-days: 14
+          
